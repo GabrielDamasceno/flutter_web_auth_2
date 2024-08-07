@@ -45,6 +45,37 @@ const _defaultLandingPage = '''
 ''';
 
 class FlutterWebAuth2Options {
+  /// Construct an instance and specify the wanted options.
+  const FlutterWebAuth2Options({
+    bool? preferEphemeral,
+    this.debugOrigin,
+    int? intentFlags,
+    this.windowName,
+    int? timeout,
+    String? landingPageHtml,
+    bool? silentAuth,
+    this.httpsHost,
+    this.httpsPath,
+  })  : preferEphemeral = preferEphemeral ?? false,
+        intentFlags = intentFlags ?? defaultIntentFlags,
+        timeout = timeout ?? 5 * 60,
+        landingPageHtml = landingPageHtml ?? _defaultLandingPage,
+        silentAuth = silentAuth ?? false;
+
+  /// Construct an instance from JSON format.
+  FlutterWebAuth2Options.fromJson(Map<String, dynamic> json)
+      : this(
+          preferEphemeral: json['preferEphemeral'],
+          debugOrigin: json['debugOrigin'],
+          intentFlags: json['intentFlags'],
+          windowName: json['windowName'],
+          timeout: json['timeout'],
+          landingPageHtml: json['landingPageHtml'],
+          silentAuth: json['silentAuth'],
+          httpsHost: json['httpsHost'],
+          httpsPath: json['httpsPath'],
+        );
+
   /// **Only has an effect on iOS and MacOS!**
   /// If this is `true`, an ephemeral web browser session
   /// will be used where possible (`prefersEphemeralWebBrowserSession`).
@@ -96,30 +127,19 @@ class FlutterWebAuth2Options {
   /// MALICIOUS ATTACKERS!
   final bool silentAuth;
 
-  const FlutterWebAuth2Options({
-    bool? preferEphemeral,
-    this.debugOrigin,
-    int? intentFlags,
-    this.windowName,
-    int? timeout,
-    String? landingPageHtml,
-    bool? silentAuth,
-  })  : preferEphemeral = preferEphemeral ?? false,
-        intentFlags = intentFlags ?? defaultIntentFlags,
-        timeout = timeout ?? 5 * 60,
-        landingPageHtml = landingPageHtml ?? _defaultLandingPage,
-        silentAuth = silentAuth ?? false;
+  /// **Only has an effect on iOS and MacOS!**
+  /// String specifying the **host** of the URL that the page will redirect to
+  /// upon successful authentication (callback URL).
+  /// When `callbackUrlScheme` is `https`, this **must** be specified on
+  /// Apple devices running iOS >= 17.4 or macOS >= 14.4.
+  final String? httpsHost;
 
-  FlutterWebAuth2Options.fromJson(Map<String, dynamic> json)
-      : this(
-          preferEphemeral: json['preferEphemeral'],
-          debugOrigin: json['debugOrigin'],
-          intentFlags: json['intentFlags'],
-          windowName: json['windowName'],
-          timeout: json['timeout'],
-          landingPageHtml: json['landingPageHtml'],
-          silentAuth: json['silentAuth'],
-        );
+  /// **Only has an effect on iOS and MacOS!**
+  /// String specifying the **path** of the URL that the page will redirect to
+  /// upon successful authentication (callback URL).
+  /// When `callbackUrlScheme` is `https`, this **must** be specified on
+  /// Apple devices running iOS >= 17.4 or macOS >= 14.4.
+  final String? httpsPath;
 
   Map<String, dynamic> toJson() => {
         'preferEphemeral': preferEphemeral,
@@ -129,5 +149,7 @@ class FlutterWebAuth2Options {
         'timeout': timeout,
         'landingPageHtml': landingPageHtml,
         'silentAuth': silentAuth,
+        'httpsHost': httpsHost,
+        'httpsPath': httpsPath,
       };
 }
